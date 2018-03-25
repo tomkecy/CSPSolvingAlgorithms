@@ -3,7 +3,7 @@ import backtracking_algorithm as bta
 
 alg = bta.BacktrackingAlgorithm()
 
-n = 5
+n = 2
 #res = alg.find_first_solution(n)
 res = alg.find_all_solutions(n)
 if res is not None:

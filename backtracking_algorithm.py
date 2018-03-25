@@ -5,26 +5,27 @@ class BacktrackingAlgorithm:
     NUM_OF_DIMENSIONS = 2
 
     def __init__(self):
-        pass
+        self._found_solutions = []
 
     def find_first_solution(self, n):
 
         domain = list(product(range(0, n), repeat=self.NUM_OF_DIMENSIONS))
         values_list = [None] * n
 
-        res = self._assign_next_value(values_list, domain, 0)
+        res = self._assign_next_value(values_list, domain, 0, False)
 
         return values_list if res else None
 
     def find_all_solutions(self, n):
+        self._found_solutions.clear()
         domain = list(product(range(0, n), repeat=self.NUM_OF_DIMENSIONS))
         results = []
         values_list = [None] * n
-        while self._assign_next_value(values_list, domain, 0) and len(domain) >= n:
+        while self._assign_next_value(values_list, domain, 0, True) and len(domain) >= n:
             results.append(list(values_list))
             index = domain.index(values_list[0])
             domain = domain[index+1:]
-        return results
+        return self._found_solutions
 
     def check_constraints(self, values, to_assign):
         m, n = to_assign
@@ -37,7 +38,7 @@ class BacktrackingAlgorithm:
                 return False
         return True
 
-    def _assign_next_value(self, values_list, domain, level):
+    def _assign_next_value(self, values_list, domain, level, find_all):
         domain_iter = iter(domain)
         try:
             to_assign = next(domain_iter)
@@ -47,10 +48,13 @@ class BacktrackingAlgorithm:
             return False
         values_list[level] = to_assign
         if len(values_list) == level+1:
+            self._found_solutions.append(list(values_list))
+            if find_all:
+                return self._assign_next_value(values_list, list(domain_iter), level, find_all)
             return True
-        if not self._assign_next_value(values_list, domain, level+1):
+        if not self._assign_next_value(values_list, domain, level+1, find_all):
             values_list[level] = None
-            return self._assign_next_value(values_list, list(domain_iter), level)
+            return self._assign_next_value(values_list, list(domain_iter), level, find_all)
         return None not in values_list
 
 
