@@ -7,7 +7,7 @@ class MyTestCase(unittest.TestCase):
 
     def find_all_solutions_test(self):
         bt_alg = backtracking_algorithm.BacktrackingAlgorithm()
-        n_upper_limit = 10
+        n_upper_limit = 7
 
         for n in range(1, n_upper_limit):
             results = bt_alg.find_all_solutions(n)
