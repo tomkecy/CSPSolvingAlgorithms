@@ -20,13 +20,8 @@ class BacktrackingAlgorithm:
     def find_all_solutions(self, n):
         self._found_solutions.clear()
         self._domain = list(product(range(0, n), repeat=self.NUM_OF_DIMENSIONS))
-        results = []
         values_list = [None] * n
-        domain = self._domain
-        while self._assign_next_value(values_list, domain, 0, True) and len(domain) >= n:
-            results.append(list(values_list))
-            index = domain.index(values_list[0])
-            domain = domain[index + 1:]
+        self._assign_next_value(values_list, self._domain, 0, True)
         return self._found_solutions
 
     def check_constraints(self, values, to_assign):
