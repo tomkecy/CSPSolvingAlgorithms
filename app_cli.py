@@ -1,10 +1,12 @@
 import numpy as np
-import backtracking_algorithm as bta
+import csp_algorithm as bta
 from enum import Enum
+from itertools import product
 
 
 class AppCli:
     INPUT_EXIT = 3
+    NUM_OF_DIMENSIONS = 2
 
     class _AlgorithmType(Enum):
         backtracking = 'backtracking'
@@ -20,8 +22,8 @@ class AppCli:
         input_value = int(input())
 
         while input_value != self.INPUT_EXIT:
-            alg = bta.BacktrackingAlgorithm()
             n = int(input('Enter n: '))
+            alg = bta.CspAlgorithm(list(product(range(0, n), repeat=self.NUM_OF_DIMENSIONS)))
             res = alg.find_all_solutions(n)
             if res is not None:
                 for solution in res:
