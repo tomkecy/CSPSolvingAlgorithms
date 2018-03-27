@@ -1,19 +1,13 @@
 import numpy as np
-import csp_algorithm as bta
-from enum import Enum
-from itertools import product
+import n_queens_solver as nqs
 
 
 class AppCli:
     INPUT_EXIT = 3
     NUM_OF_DIMENSIONS = 2
 
-    class _AlgorithmType(Enum):
-        backtracking = 'backtracking'
-        forward_checking = 'forward_checking'
-
     def __init__(self):
-        self._algorithm = self._AlgorithmType.backtracking
+        self._algorithm = nqs.AlgorithmType.backtracking
         self._problem = 'N-Queens'
 
     def run(self):
@@ -23,8 +17,8 @@ class AppCli:
 
         while input_value != self.INPUT_EXIT:
             n = int(input('Enter n: '))
-            alg = bta.CspAlgorithm(list(product(range(0, n), repeat=self.NUM_OF_DIMENSIONS)))
-            res = alg.find_all_solutions(n)
+            alg = nqs.NQueensSolver(n)
+            res = alg.find_all_solutions()
             if res is not None:
                 for solution in res:
                     result_matrix = np.zeros(shape=(n, n))
