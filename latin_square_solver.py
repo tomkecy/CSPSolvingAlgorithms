@@ -1,6 +1,4 @@
 from csp_algorithm import *
-import numpy as np
-
 
 class LatinSquareSolver:
     def __init__(self, n):
@@ -10,14 +8,12 @@ class LatinSquareSolver:
 
     def find_all_solutions(self):
         csp_algorithm = CspAlgorithm(self._variables, self._domain, [self._latin_square_constraint], AlgorithmType.backtracking)
-        res = csp_algorithm.find_all_solutions(self._n)
-        if res:
-            print(np.array(res).reshape((self._n, self._n)))
+        res = csp_algorithm.find_all_solutions()
         return res
 
     def find_all_solutions_fc(self):
         csp_algorithm = CspAlgorithm(self._variables, self._domain, [self._latin_square_constraint], AlgorithmType.forward_checking)
-        return csp_algorithm.find_all_solutions(self._n)
+        return csp_algorithm.find_all_solutions()
 
     def _latin_square_constraint(self, variable_index, val_to_assign, assigned_variables):
         m, n = variable_index//self._n, variable_index % self._n

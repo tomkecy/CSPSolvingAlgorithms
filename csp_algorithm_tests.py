@@ -19,7 +19,6 @@ class CspAlgorithmTests(unittest.TestCase):
                              'Incorrect num of solutions for n = %s\n%s != %s' % (
                              n, len(results), self._n_queens_all_solutions[n - 1]))
 
-    @unittest.skip
     def n_queens_find_all_fc_test(self):
         n_upper_limit = 4
         for n in range(1, n_upper_limit):
@@ -30,9 +29,9 @@ class CspAlgorithmTests(unittest.TestCase):
             self.assertEqual(len(results), self._n_queens_all_solutions[n - 1],
                              'Incorrect num of solutions for n = %s\n%s != %s' % (
                              n, len(results), self._n_queens_all_solutions[n - 1]))
-    #@unittest.skip
+
     def latin_square_find_all_bt_test(self):
-        n_upper_limit = 4
+        n_upper_limit = 5
         results = []
         for n in range(1, n_upper_limit):
 
@@ -40,11 +39,18 @@ class CspAlgorithmTests(unittest.TestCase):
 
             results.append(len(bt_alg.find_all_solutions()))
 
-        self.assertListEqual(results, self._latin_square_all_solutions[:n_upper_limit])
-            #self.assertEqual(len(results), self._latin_square_all_solutions[n - 1],
-            #                 'Incorrect num of solutions for n = %s\n%s != %s' % (
-            #                 n, len(results), self._latin_square_all_solutions[n - 1]))
+        self.assertListEqual(results, self._latin_square_all_solutions[:n_upper_limit-1])
 
+    def latin_square_find_all_fc_test(self):
+        n_upper_limit = 5
+        results = []
+        for n in range(1, n_upper_limit):
+
+            bt_alg = lss.LatinSquareSolver(n)
+
+            results.append(len(bt_alg.find_all_solutions_fc()))
+
+        self.assertListEqual(results, self._latin_square_all_solutions[:n_upper_limit-1])
 
 if __name__ == '__main__':
     unittest.main()
