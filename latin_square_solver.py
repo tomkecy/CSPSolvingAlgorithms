@@ -1,5 +1,6 @@
 from csp_algorithm import *
 
+
 class LatinSquareSolver:
     def __init__(self, n):
         self._n = n

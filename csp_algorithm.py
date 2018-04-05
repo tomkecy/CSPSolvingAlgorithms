@@ -37,19 +37,20 @@ class CspAlgorithm:
         return all([constraint(variable_index, val_to_assign, assigned_variables) for constraint in self._constraints])
 
     def _assign_next_fc(self, values_list, domain, level, find_all):
+        is_solution_found = False
         for to_assign in domain:
             values_list[level] = to_assign
             domain_copy = [to_check for to_check in domain if
                            self._check_constraints(level, to_assign, values_list[:level])]
             if domain_copy:
-                self._assign_next_fc(values_list, domain_copy, level + 1, find_all)
-
-        if len(values_list) == level + 1:
-            solution = list(values_list)
-            if not self._is_existing_solution(solution):
-                self._found_solutions.append(solution)
-                return True
-        return False
+                if level == len(values_list) - 1:
+                    if not self._is_existing_solution(values_list):
+                        solution = list(values_list)
+                        self._found_solutions.append(solution)
+                        is_solution_found = True
+                else:
+                    self._assign_next_fc(values_list, domain_copy, level + 1, find_all)
+        return is_solution_found
 
     def _assign_next_value(self, values_list, domain, level, find_all):
         domain_iter = iter(domain)

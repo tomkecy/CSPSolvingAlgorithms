@@ -6,10 +6,10 @@ import latin_square_solver as lss
 class CspAlgorithmTests(unittest.TestCase):
     _n_queens_all_solutions = [1, 0, 0, 2, 10, 4, 40, 92, 352, 724, 2680, 14200, 73712, 365596, 2279184]
     _latin_square_all_solutions = [1, 2, 12, 576, 161280]
+    _n_queens_upper_limit = 6
 
     def n_queens_find_all_bt_test(self):
-        n_upper_limit = 6
-        for n in range(1, n_upper_limit):
+        for n in range(1, self._n_queens_upper_limit):
 
             bt_alg = nqs.NQueensSolver(n)
 
@@ -20,12 +20,11 @@ class CspAlgorithmTests(unittest.TestCase):
                              n, len(results), self._n_queens_all_solutions[n - 1]))
 
     def n_queens_find_all_fc_test(self):
-        n_upper_limit = 4
-        for n in range(1, n_upper_limit):
+        for n in range(1, self._n_queens_upper_limit):
             bt_alg = nqs.NQueensSolver(n)
 
             results = bt_alg.find_all_solutions_fc()
-
+            print(results)
             self.assertEqual(len(results), self._n_queens_all_solutions[n - 1],
                              'Incorrect num of solutions for n = %s\n%s != %s' % (
                              n, len(results), self._n_queens_all_solutions[n - 1]))
