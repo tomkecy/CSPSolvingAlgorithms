@@ -13,7 +13,7 @@ class CspAlgorithm:
         self._returns_counter = 0
         self._constraints = constraints
         self._variables = variables
-        self._solution_comparator = solution_comparator if solution_comparator is not None else lambda x, y: False
+        self._solution_comparator = solution_comparator
 
         if algorithm == AlgorithmType.backtracking:
             self._algorithm = self._assign_next_value
@@ -80,5 +80,7 @@ class CspAlgorithm:
         return False
 
     def _is_existing_solution(self, solution):
+        if self._solution_comparator is None:
+            return False
         return any([self._solution_comparator(found_solution, solution) for found_solution in
                     self._found_solutions])
