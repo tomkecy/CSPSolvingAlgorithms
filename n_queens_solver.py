@@ -25,7 +25,7 @@ class NQueensSolver:
                 return False
             x1 = i - m
             x2 = j - n
-            if abs(x1) == abs(x2) and i == (m + x1) and j == (n + x2):
+            if abs(x1) == abs(x2):
                 return False
         return True
 
