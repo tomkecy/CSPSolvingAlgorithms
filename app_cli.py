@@ -1,5 +1,7 @@
 import numpy as np
 import n_queens_solver as nqs
+import latin_square_solver as lss
+from csp_algorithm import AlgorithmType
 
 
 class AppCli:
@@ -11,13 +13,12 @@ class AppCli:
     N_QUEENS = 'N-Queens'
 
     def __init__(self):
-        self._algorithm = nqs.AlgorithmType.backtracking
+        self._algorithm = AlgorithmType.backtracking
         self._problem = self.N_QUEENS
         self._n = 1
 
     def run(self):
-        self._print_current_config()
-        print('1. Run\n2. Change configuration\n3. Exit')
+        self._print_menu()
         input_value = self._get_user_input()
 
         while input_value != self.INPUT_EXIT:
@@ -28,9 +29,13 @@ class AppCli:
             else:
                 print('Incorrect input')
 
-            self._print_current_config()
-            print('1. Run\n2. Change configuration\n3. Exit')
+            self._print_menu()
             input_value = self._get_user_input()
+
+    def _print_menu(self):
+        print('--------------\nMenu\n--------------')
+        self._print_current_config()
+        print('1. Run\n2. Change configuration\n3. Exit')
 
     def _get_user_input(self):
         user_input = None
@@ -45,15 +50,21 @@ class AppCli:
         print('Problem: %s\nAlgorithm: %s\nN: %s\n' % (self._problem, self._algorithm.value, self._n))
 
     def _run_algorithm(self):
-        alg = nqs.NQueensSolver(self._n)
+
+        alg = nqs.NQueensSolver(self._n) if self._problem == self.N_QUEENS else lss.LatinSquareSolver(self._n)
         res = alg.find_all_solutions()
 
         if res is not None:
-            for solution in res:
-                result_matrix = np.zeros(shape=(self._n, self._n))
-                for i, j, in solution:
-                    result_matrix[i, j] = 1
-                print(result_matrix)
+            if self._problem == self.N_QUEENS:
+                for solution in res:
+                    result_matrix = np.zeros(shape=(self._n, self._n))
+                    for i, j, in solution:
+                        result_matrix[i, j] = 1
+                    print(result_matrix)
+            else:
+                for solution in res:
+                    result_matrix = np.reshape(solution, (self._n, self._n))
+                    print(result_matrix)
             print('Num of solutions for n = %s: %s\n' % (self._n, len(res)))
         else:
             print('No solutions for n=%s\n' % self._n)
