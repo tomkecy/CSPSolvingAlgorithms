@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class AlgorithmType(Enum):
-    backtracking = 'backtracking'
-    forward_checking = 'forward_checking'
+    backtracking = 'Backtracking'
+    forward_checking = 'Forward checking'
 
 
 class CspAlgorithm:
