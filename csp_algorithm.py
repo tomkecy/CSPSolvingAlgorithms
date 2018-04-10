@@ -24,7 +24,7 @@ class CspAlgorithm:
 
     def find_first_solution(self):
         res = self._algorithm(self._variables, self._domain, 0, False)
-        return self._variables if res else None
+        return self._found_solutions
 
     def find_all_solutions(self):
         self._found_solutions.clear()
@@ -48,6 +48,8 @@ class CspAlgorithm:
                         solution = list(values_list)
                         self._found_solutions.append(solution)
                         is_solution_found = True
+                        if find_all:
+                            return True
                 else:
                     self._assign_next_fc(values_list, domain_copy, level + 1, find_all)
         return is_solution_found

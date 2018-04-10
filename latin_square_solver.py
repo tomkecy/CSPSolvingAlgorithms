@@ -7,16 +7,14 @@ class LatinSquareSolver:
         self._domain = [i + 1 for i in range(n)]
         self._variables = [None] * n * n
 
-    def find_all_solutions(self):
-        csp_algorithm = CspAlgorithm(self._variables, self._domain, [self._latin_square_constraint],
-                                     AlgorithmType.backtracking)
+    def find_first_solution(self, algorithm):
+        csp_algorithm = CspAlgorithm(self._variables, self._domain, [self._latin_square_constraint], algorithm)
+        return csp_algorithm.find_first_solution()
+
+    def find_all_solutions(self, algorithm):
+        csp_algorithm = CspAlgorithm(self._variables, self._domain, [self._latin_square_constraint], algorithm)
         res = csp_algorithm.find_all_solutions()
         return res
-
-    def find_all_solutions_fc(self):
-        csp_algorithm = CspAlgorithm(self._variables, self._domain, [self._latin_square_constraint],
-                                     AlgorithmType.forward_checking)
-        return csp_algorithm.find_all_solutions()
 
     def _latin_square_constraint(self, variable_index, val_to_assign, assigned_variables):
         m, n = variable_index // self._n, variable_index % self._n

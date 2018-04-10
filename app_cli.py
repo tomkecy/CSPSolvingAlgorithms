@@ -52,8 +52,7 @@ class AppCli:
     def _run_algorithm(self):
 
         alg = nqs.NQueensSolver(self._n) if self._problem == self.N_QUEENS else lss.LatinSquareSolver(self._n)
-        res = alg.find_all_solutions()
-
+        res = alg.find_first_solution(self._algorithm)
         if res is not None:
             if self._problem == self.N_QUEENS:
                 for solution in res:
