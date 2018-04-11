@@ -69,11 +69,10 @@ class CspAlgorithmTests(unittest.TestCase):
 
     def latin_square_find_first_bt_test(self):
         n_upper_limit = 4
-        results = []
         for n in range(1, n_upper_limit):
             solver = lss.LatinSquareSolver(n)
 
-            results.append(len(solver.find_first_solution(AlgorithmType.backtracking)))
+            results = solver.find_first_solution(AlgorithmType.backtracking)
 
             self.assertEqual(len(results), 1 if self._latin_square_all_solutions[n - 1] > 0 else 0,
                              'Incorrect num of solutions for n = %s\nFound solutions: %s' % (n, len(results)))
@@ -84,7 +83,7 @@ class CspAlgorithmTests(unittest.TestCase):
         for n in range(1, n_upper_limit):
             solver = lss.LatinSquareSolver(n)
 
-            results.append(len(solver.find_first_solution(AlgorithmType.forward_checking)))
+            results = solver.find_first_solution(AlgorithmType.forward_checking)
 
             self.assertEqual(len(results), 1 if self._latin_square_all_solutions[n - 1] > 0 else 0,
                              'Incorrect num of solutions for n = %s\nFound solutions: %s' % (n, len(results)))

@@ -16,7 +16,7 @@ class CspAlgorithm:
         self._solution_comparator = solution_comparator
 
         if algorithm == AlgorithmType.backtracking:
-            self._algorithm = self._assign_next_value
+            self._algorithm = self._assign_next_bt
         elif algorithm == AlgorithmType.forward_checking:
             self._algorithm = self._assign_next_fc
         else:
@@ -39,6 +39,8 @@ class CspAlgorithm:
     def _assign_next_fc(self, values_list, domain, level, find_all):
         is_solution_found = False
         for to_assign in domain:
+            if not find_all and self._found_solutions:
+                return True
             values_list[level] = to_assign
             domain_copy = [to_check for to_check in domain if
                            self._check_constraints(level, to_assign, values_list[:level])]
@@ -48,13 +50,11 @@ class CspAlgorithm:
                         solution = list(values_list)
                         self._found_solutions.append(solution)
                         is_solution_found = True
-                        if find_all:
-                            return True
                 else:
                     self._assign_next_fc(values_list, domain_copy, level + 1, find_all)
         return is_solution_found
 
-    def _assign_next_value(self, values_list, domain, level, find_all):
+    def _assign_next_bt(self, values_list, domain, level, find_all):
         domain_iter = iter(domain)
         try:
             to_assign = next(domain_iter)
@@ -70,16 +70,16 @@ class CspAlgorithm:
             if not self._is_existing_solution(solution):
                 self._found_solutions.append(solution)
             else:
-                return self._assign_next_value(values_list, list(domain_iter), level, find_all)
+                return self._assign_next_bt(values_list, list(domain_iter), level, find_all)
             if find_all:
-                return self._assign_next_value(values_list, list(domain_iter), level, find_all)
+                return self._assign_next_bt(values_list, list(domain_iter), level, find_all)
             return True
 
-        if not self._assign_next_value(values_list, self._domain, level + 1, find_all):
+        if not self._assign_next_bt(values_list, self._domain, level + 1, find_all):
             self._returns_counter += 1
-            return self._assign_next_value(values_list, list(domain_iter), level, find_all)
+            return self._assign_next_bt(values_list, list(domain_iter), level, find_all)
 
-        return False
+        return True
 
     def _is_existing_solution(self, solution):
         if self._solution_comparator is None:
