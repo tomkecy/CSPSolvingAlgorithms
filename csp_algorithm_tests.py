@@ -79,7 +79,6 @@ class CspAlgorithmTests(unittest.TestCase):
 
     def latin_square_find_first_fc_test(self):
         n_upper_limit = 4
-        results = []
         for n in range(1, n_upper_limit):
             solver = lss.LatinSquareSolver(n)
 

@@ -5,12 +5,19 @@ from csp_algorithm import AlgorithmType
 
 
 class AppCli:
-    INPUT_RUN = 1
-    INPUT_CHANGE_CONFIG = 2
-    INPUT_EXIT = 3
+    INPUT_FIND_FIRST = 1
+    INPUT_FIND_ALL = 2
+    INPUT_CHANGE_CONFIG = 3
+    INPUT_EXIT = 4
 
     LATIN_SQUARE = 'Latin square'
     N_QUEENS = 'N-Queens'
+
+    MENU_OPTIONS_STRING = '1. Find first solution\n2. Find all solutions\n3. Change configuration\n4. Exit'
+    MENU_HEADER_STRING = '--------------\nMenu\n--------------\n'
+
+    CONFIG_HEADER_STRING = '--------------\nChange configuration\n--------------\n'
+    CONFIG_OPTIONS_STRING = '1. Set problem\n2. Set algorithm\n3. Set n\n4. Return'
 
     def __init__(self):
         self._algorithm = AlgorithmType.backtracking
@@ -22,8 +29,10 @@ class AppCli:
         input_value = self._get_user_input()
 
         while input_value != self.INPUT_EXIT:
-            if input_value == self.INPUT_RUN:
-                self._run_algorithm()
+            if input_value == self.INPUT_FIND_FIRST:
+                self._run_algorithm(False)
+            elif input_value == self.INPUT_FIND_ALL:
+                self._run_algorithm(True)
             elif input_value == self.INPUT_CHANGE_CONFIG:
                 self._change_config()
             else:
@@ -33,27 +42,28 @@ class AppCli:
             input_value = self._get_user_input()
 
     def _print_menu(self):
-        print('--------------\nMenu\n--------------')
-        self._print_current_config()
-        print('1. Run\n2. Change configuration\n3. Exit')
+        print('%s%s%s' % (self.MENU_HEADER_STRING, self._get_current_config_string(), self.MENU_OPTIONS_STRING))
 
-    def _get_user_input(self):
+    def _get_user_input(self, prompt=None):
         user_input = None
         while user_input is None:
             try:
-                user_input = int(input())
+                user_input = int(input()) if prompt is None else int(input(prompt))
             except ValueError:
                 print('Incorrect input, try again')
         return user_input
 
-    def _print_current_config(self):
-        print('Problem: %s\nAlgorithm: %s\nN: %s\n' % (self._problem, self._algorithm.value, self._n))
+    def _get_current_config_string(self):
+        return 'Current config\nProblem: %s\nAlgorithm: %s\nN: %s\n' % (self._problem, self._algorithm.value, self._n)
 
-    def _run_algorithm(self):
-
+    def _run_algorithm(self, find_all):
         alg = nqs.NQueensSolver(self._n) if self._problem == self.N_QUEENS else lss.LatinSquareSolver(self._n)
-        res = alg.find_first_solution(self._algorithm)
-        if res is not None:
+
+        res = alg.find_all_solutions(self._algorithm) if find_all else alg.find_first_solution(self._algorithm)
+        self._print_found_solutions(res, find_all)
+
+    def _print_found_solutions(self, res, find_all):
+        if res:
             if self._problem == self.N_QUEENS:
                 for solution in res:
                     result_matrix = np.zeros(shape=(self._n, self._n))
@@ -64,14 +74,14 @@ class AppCli:
                 for solution in res:
                     result_matrix = np.reshape(solution, (self._n, self._n))
                     print(result_matrix)
-            print('Num of solutions for n = %s: %s\n' % (self._n, len(res)))
+
+            if find_all:
+                print('\nNum of solutions for n = %s: %s\n' % (self._n, len(res)))
         else:
             print('No solutions for n=%s\n' % self._n)
 
     def _change_config(self):
-        print('--------------\nChange configuration\n--------------\nCurrent config')
-        self._print_current_config()
-        print('1. Set problem\n2. Set algorithm\n3. Set n\n4. Return')
+        self._print_change_config_menu()
         input_value = self._get_user_input()
 
         while input_value != 4:
@@ -84,10 +94,11 @@ class AppCli:
             else:
                 print('Incorrect input')
 
-            print('--------------\nChange configuration\n--------------\nCurrent config')
-            self._print_current_config()
-            print('1. Set problem\n2. Set algorithm\n3. Set n\n4. Return')
+            self._print_change_config_menu()
             input_value = self._get_user_input()
+
+    def _print_change_config_menu(self):
+        print('%s%s%s' % (self.CONFIG_HEADER_STRING, self._get_current_config_string(), self.CONFIG_OPTIONS_STRING))
 
     def _change_config_problem(self):
         print('1. N-Queens\n2. Latin square')
@@ -110,4 +121,4 @@ class AppCli:
             print('Incorrect input')
 
     def _change_config_n(self):
-        self._n = int(input('Enter n: '))
+        self._n = self._get_user_input('Enter n:')
