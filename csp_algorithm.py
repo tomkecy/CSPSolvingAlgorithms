@@ -1,4 +1,5 @@
 from enum import Enum
+from timeit import default_timer as timer
 
 
 class AlgorithmType(Enum):
@@ -10,10 +11,13 @@ class CspAlgorithm:
     def __init__(self, variables, domain, constraints, algorithm=AlgorithmType.backtracking, solution_comparator=None):
         self._found_solutions = []
         self._domain = domain
-        self._returns_counter = 0
         self._constraints = constraints
         self._variables = variables
         self._solution_comparator = solution_comparator
+
+        self._returns_counter = 0
+        self._execution_time = 0
+        self._recursive_calls = 0
 
         if algorithm == AlgorithmType.backtracking:
             self._algorithm = self._assign_next_bt
@@ -23,20 +27,29 @@ class CspAlgorithm:
             raise Exception('Invalid algorithm')
 
     def find_first_solution(self):
-        res = self._algorithm(self._variables, self._domain, 0, False)
+        start = timer()
+        self._algorithm(self._variables, self._domain, 0, False)
+        end = timer()
+        self._execution_time = end - start
         return self._found_solutions
 
     def find_all_solutions(self):
         self._found_solutions.clear()
-        values_list = self._variables
 
-        self._algorithm(values_list, self._domain, 0, True)
+        start = timer()
+        self._algorithm(self._variables, self._domain, 0, True)
+        end = timer()
+        self._execution_time = end - start
         return self._found_solutions
+
+    def get_last_execution_details(self):
+        return self._execution_time, self._recursive_calls, self._returns_counter
 
     def _check_constraints(self, variable_index, val_to_assign, assigned_variables):
         return all([constraint(variable_index, val_to_assign, assigned_variables) for constraint in self._constraints])
 
     def _assign_next_fc(self, values_list, domain, level, find_all):
+        self._recursive_calls += 1
         is_solution_found = False
         for to_assign in domain:
             if not find_all and self._found_solutions:
@@ -51,10 +64,13 @@ class CspAlgorithm:
                         self._found_solutions.append(solution)
                         is_solution_found = True
                 else:
-                    self._assign_next_fc(values_list, domain_copy, level + 1, find_all)
+                    is_solution_found = self._assign_next_fc(values_list, domain_copy, level + 1, find_all)
+                    if not is_solution_found:
+                        self._returns_counter += 1
         return is_solution_found
 
     def _assign_next_bt(self, values_list, domain, level, find_all):
+        self._recursive_calls += 1
         domain_iter = iter(domain)
         try:
             to_assign = next(domain_iter)
