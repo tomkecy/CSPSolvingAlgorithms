@@ -27,6 +27,9 @@ class CspAlgorithm:
             raise Exception('Invalid algorithm')
 
     def find_first_solution(self):
+        self._recursive_calls = 0
+        self._returns_counter = 0
+
         start = timer()
         self._algorithm(self._variables, self._domain, 0, False)
         end = timer()
@@ -34,6 +37,8 @@ class CspAlgorithm:
         return self._found_solutions
 
     def find_all_solutions(self):
+        self._recursive_calls = 0
+        self._returns_counter = 0
         self._found_solutions.clear()
 
         start = timer()
